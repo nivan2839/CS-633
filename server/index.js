@@ -1,4 +1,15 @@
 const express = require("express")
+var AWS = require('aws-sdk');
+
+AWS.config.update(
+  {
+    region: 'us-east-1',
+    accessKeyId: 'AKIAZUBZUN32QUYGX44I',
+    secretAccessKey: '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'
+  }
+);
+
+const docClient = new AWS.DynamoDB.DocumentClient();
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -34,6 +45,21 @@ app.post("/signup", (req, res) => {
      * Check to see if email is already associated with a user
      * Insert into users Values (req.body.email, req.body.password, req.body.creditcardinfo)
      */
+     const params = {
+        TableName: 'users',
+        Item: {
+            'email': req.body.email,
+            'password': req.body.password
+        }
+    };
+    docClient.put(params, function(err) {
+        if (err) {
+            console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+        }
+        else {
+            console.log("Success")
+        }
+    });
 });
 
 app.post("/order", (req, res) => {
