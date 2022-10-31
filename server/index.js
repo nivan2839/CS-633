@@ -24,6 +24,18 @@ app.get("/", (req, res) => {
         Select * from menu
         Send objects
     */
+    const foodParams = {
+        TableName: 'food',
+        ProjectionExpression: "id, name, description, photo",
+    }
+    docClient.scan(foodParams, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        }
+        else {
+            print("send items")
+        }
+    });
     res.json({message: "Hello from server!"})
 })
 
@@ -37,6 +49,32 @@ app.post("/login", (req, res) => {
         if req.body.password === obj.password send true
         else send false
     */
+    const params = {
+        TableName: 'accounts',
+        KeyConditionExpression: "#em = :eeee",
+        ExpressionAttributeNames: {
+            "#em": "email"
+        },
+        ExpressionAttributeValues: {
+            ":eeee": req.body.email
+        }
+    }
+    docClient.query(params, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        }
+        else {
+            const user = data.Items[0];
+            if (user) {
+                if (req.body.password == user.password){
+                    print("Logged In")
+                }
+                else {
+                    print("Failure to log in")
+                }
+            }
+        }
+    });
 })
 
 //Receive user info and add them to DB
@@ -47,10 +85,14 @@ app.post("/signup", (req, res) => {
      * Insert into users Values (req.body.email, req.body.password, req.body.creditcardinfo)
      */
      const params = {
-        TableName: 'users',
+        TableName: 'accounts',
         Item: {
             'email': req.body.email,
-            'password': req.body.password
+            'password': req.body.password,
+            'firstName': req.body.firstName,
+            'lastName': req.body.lastName,
+            'creditCardNumber': req.body.creditCardNumber,
+            'ccv': req.body.ccv
         }
     };
     docClient.put(params, function(err) {
