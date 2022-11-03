@@ -1,3 +1,4 @@
+import {v4 as uuidv4} from 'uuid'
 const express = require("express")
 var AWS = require('aws-sdk');
 require('dotenv').config();
@@ -33,11 +34,35 @@ app.get("/", (req, res) => {
             console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         }
         else {
-            print("send items")
+            print("Sent menu items")
+            res.send(data.Items)
         }
     });
-    res.json({message: "Hello from server!"})
 })
+
+//Send all the user's previous orders
+app.post("/prevOrders", (req, res) => {
+    const foodParams = {
+        TableName: 'orders',
+        ProjectionExpression: "order_id, #em, items",
+        FilterExpression: "#em = :eeee",
+        ExpressionAttributeNames: {
+            "#em": "email"
+        },
+        ExpressionAttributeValues: {
+            ":eeee": req.body.email
+        }
+    }
+    docClient.scan(foodParams, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        }
+        else {
+            console.log("Sent previous orders")
+            res.send(data.Items)
+        }
+    });
+});
 
 //Recieve user info and check against user in the DB
 app.post("/login", (req, res) => {
@@ -67,10 +92,10 @@ app.post("/login", (req, res) => {
             const user = data.Items[0];
             if (user) {
                 if (req.body.password == user.password){
-                    print("Logged In")
+                    res.send("Success")
                 }
                 else {
-                    print("Failure to log in")
+                    res.send("Failure")
                 }
             }
         }
@@ -84,7 +109,7 @@ app.post("/signup", (req, res) => {
      * Check to see if email is already associated with a user
      * Insert into users Values (req.body.email, req.body.password, req.body.creditcardinfo)
      */
-     const params = {
+    const params = {
         TableName: 'accounts',
         Item: {
             'email': req.body.email,
@@ -100,7 +125,7 @@ app.post("/signup", (req, res) => {
             console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
         }
         else {
-            console.log("Success")
+            res.send("Success")
         }
     });
 });
@@ -110,6 +135,22 @@ app.post("/order", (req, res) => {
     /**
      * Insert into orders all items ordered as well as email
      */
+     const params = {
+        TableName: 'orders',
+        Item: {
+            'order_id': new uuidv4(),
+            'email': req.body.email,
+            'items': req.body.items
+        }
+    };
+    docClient.put(params, function(err) {
+        if (err) {
+            console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+        }
+        else {
+            res.send("30 minutes")
+        }
+    });
 })
 
 app.listen(PORT, () => {
