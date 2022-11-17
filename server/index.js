@@ -1,5 +1,5 @@
-import {v4 as uuidv4} from 'uuid'
-const express = require("express")
+const uuid =  require('uuid');
+const express = require("express");
 var AWS = require('aws-sdk');
 require('dotenv').config();
 
@@ -90,13 +90,27 @@ app.post("/login", (req, res) => {
         }
         else {
             const user = data.Items[0];
+            let bufferObj = Buffer.from(req.body.password, 'utf-8');
+            const encryptedPassword = bufferObj.toString('base64');
             if (user) {
-                if (req.body.password == user.password){
-                    res.send("Success")
+                if (encryptedPassword == user.password){
+                    bufferObj = Buffer.from(user.creditCardNumber, 'base64');
+                    const creditCardNumber = bufferObj.toString('ascii');
+                    res.send({
+                        email: user.email,
+                        password: req.body.password,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        creditCardNumber,
+                        ccv: user.ccv
+                    });
                 }
                 else {
                     res.send("Failure")
                 }
+            }
+            else {
+                res.send("No account associated with this email")
             }
         }
     });
@@ -109,14 +123,18 @@ app.post("/signup", (req, res) => {
      * Check to see if email is already associated with a user
      * Insert into users Values (req.body.email, req.body.password, req.body.creditcardinfo)
      */
+    let bufferObj = Buffer.from(req.body.password, 'utf-8');
+    const encryptedPassword = bufferObj.toString('base64')
+    bufferObj = Buffer.from(req.body.creditCardNumber, 'utf-8');
+    const encryptedCardNumber = bufferObj.toString('base64');
     const params = {
         TableName: 'accounts',
         Item: {
             'email': req.body.email,
-            'password': req.body.password,
+            'password': encryptedPassword,
             'firstName': req.body.firstName,
             'lastName': req.body.lastName,
-            'creditCardNumber': req.body.creditCardNumber,
+            'creditCardNumber': encryptedCardNumber,
             'ccv': req.body.ccv
         }
     };
@@ -138,7 +156,7 @@ app.post("/order", (req, res) => {
      const params = {
         TableName: 'orders',
         Item: {
-            'order_id': new uuidv4(),
+            'order_id': uuid.v4(),
             'email': req.body.email,
             'items': req.body.items
         }
