@@ -6,8 +6,8 @@ require('dotenv').config();
 AWS.config.update(
   {
     region: 'us-east-1',
-    accessKeyId: process.env.ACCESSKEYID,
-    secretAccessKey: process.env.SECRETACCESSKEY
+    accessKeyId: 'AKIAZUBZUN324SKFH6EM',
+    secretAccessKey: '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'
   }
 );
 
@@ -15,7 +15,14 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+var allowCrossDomain = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', "*");
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+};
 
+app.use(allowCrossDomain);
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
@@ -26,43 +33,18 @@ app.get("/menu", (req, res) => {
         Send objects
     */
     const foodParams = {
-        TableName: 'food',
-        ProjectionExpression: "id, name, description, photo",
+        TableName: 'menu',
+        ProjectionExpression: "id, food_name, category, description, image, price, prices, num, amount",
     }
     docClient.scan(foodParams, function(err, data) {
         if (err) {
             console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
         }
         else {
-            print("Sent menu items")
-            res.send(data.Items)
+            res.json({menu: data.Items})
         }
     });
 })
-
-//Send all the user's previous orders
-app.post("/prevOrders", (req, res) => {
-    const foodParams = {
-        TableName: 'orders',
-        ProjectionExpression: "order_id, #em, items",
-        FilterExpression: "#em = :eeee",
-        ExpressionAttributeNames: {
-            "#em": "email"
-        },
-        ExpressionAttributeValues: {
-            ":eeee": req.body.email
-        }
-    }
-    docClient.scan(foodParams, function(err, data) {
-        if (err) {
-            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
-        }
-        else {
-            console.log("Sent previous orders")
-            res.send(data.Items)
-        }
-    });
-});
 
 //Recieve user info and check against user in the DB
 app.post("/login", (req, res) => {
@@ -96,21 +78,38 @@ app.post("/login", (req, res) => {
                 if (encryptedPassword == user.password){
                     bufferObj = Buffer.from(user.creditCardNumber, 'base64');
                     const creditCardNumber = bufferObj.toString('ascii');
-                    res.send({
-                        email: user.email,
-                        password: req.body.password,
+                    const userInfo = {
                         firstName: user.firstName,
                         lastName: user.lastName,
                         creditCardNumber,
                         ccv: user.ccv
+                    }
+                    const foodParams = {
+                        TableName: 'orders',
+                        ProjectionExpression: "order_id, #em, items",
+                        FilterExpression: "#em = :eeee",
+                        ExpressionAttributeNames: {
+                            "#em": "email"
+                        },
+                        ExpressionAttributeValues: {
+                            ":eeee": req.body.email
+                        }
+                    }
+                    docClient.scan(foodParams, function(err, data) {
+                        if (err) {
+                            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+                        }
+                        else {
+                            res.json({prevItems: data.Items, user: userInfo})
+                        }
                     });
                 }
                 else {
-                    res.send("Failure")
+                    res.json({error: 'Incorrect password'})
                 }
             }
             else {
-                res.send("No account associated with this email")
+                res.json({error: "No account associated with this email"})
             }
         }
     });
@@ -143,7 +142,7 @@ app.post("/signup", (req, res) => {
             console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
         }
         else {
-            res.send("Success")
+            res.json({message: "Success"})
         }
     });
 });
@@ -166,7 +165,7 @@ app.post("/order", (req, res) => {
             console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
         }
         else {
-            res.send("30 minutes")
+            res.json({time: "30 minutes"})
         }
     });
 })

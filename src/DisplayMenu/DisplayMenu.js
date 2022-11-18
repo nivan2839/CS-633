@@ -1,9 +1,14 @@
 import IndividualItem from "./IndividualItem.js";
 import "./DisplayMenu.css";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import AuthContext from "../ContextApi/AuthContext.js";
 const DisplayMenu = () =>{
     const cxt = useContext(AuthContext);
+    useEffect(() => {
+        fetch("http://localhost:3001/menu")
+          .then((res) => res.json())
+          .then((data) => console.log(data));
+    }, []);
     return (
     <div className="test">
     <div className="menu-options">
