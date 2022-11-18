@@ -20,7 +20,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 //Send all menu items from DB to frontend
-app.get("/", (req, res) => {
+app.get("/menu", (req, res) => {
     /*
         Select * from menu
         Send objects
