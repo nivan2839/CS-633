@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
+.header p{
+    color: rgba(254, 0, 0, 0.998);
+    margin-left: 510px;
+    font-size: 45px;
+    margin-top: 10px;
+    font-family: 'Caveat', cursive;
+}
+img {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+    margin-top: 30px;
+    margin-left: 570px;
+    margin-bottom: 30px;
+}
