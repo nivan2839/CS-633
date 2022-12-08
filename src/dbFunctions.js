@@ -27,9 +27,8 @@ export async function order(items) {
         headers:{
             "Content-type": "application/json; charset=UTF-8"
         }
-    }
+    })
         .then(res => res.json())
         .then(data => data.time)
-    );
-    return time;
+         return time;
 }

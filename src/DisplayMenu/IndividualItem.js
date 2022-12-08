@@ -10,15 +10,8 @@ const IndividualItem = (props) =>{
     const removeFromCart = () =>{
         cxt.removeFromCartCountHandler(props.id);
     }
-    if(props.count === 0){
-        content = <button className="addition" onClick={addToCart}>Add</button>
-    }
-    else {
-        content = <button className="minus" onClick={removeFromCart}>-</button>
-        contentValue = <p>{props.count}</p>
-        contentAdd = <button className="add-more" onClick={addToCart}>+</button>
-        desc = "description";
-    }
+    content = <button className="addition" onClick={addToCart}>Add</button>
+
     return( 
     <div className="individual-items">
         <div className="food-container">

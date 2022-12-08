@@ -156,7 +156,6 @@ app.post("/order", (req, res) => {
         TableName: 'orders',
         Item: {
             'order_id': uuid.v4(),
-            'email': req.body.email,
             'items': req.body.items
         }
     };
@@ -169,6 +168,8 @@ app.post("/order", (req, res) => {
         }
     });
 })
+
+
 
 app.listen(PORT, () => {
     console.log(`Server listening on ${PORT}`)

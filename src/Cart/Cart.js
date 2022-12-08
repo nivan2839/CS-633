@@ -2,13 +2,14 @@ import { useContext} from "react";
 import AuthContext from "../ContextApi/AuthContext"
 import CartObjects from "./CartObjects";
 import "./Cart.css";
+import {order} from '../dbFunctions'
 const Cart = () =>{
     const cxt = useContext(AuthContext);
     let cart_total,total,clear_cart,content;
-    let checkout_button = <button className="checkout">Checkout</button>;
     const FOOD_IN_CART = cxt.cartMenu.filter((events)=>{
             return events.count !== 0;
     })
+    let checkout_button = <button className="checkout" onClick={() => order(FOOD_IN_CART)}>Checkout</button>;
     if(FOOD_IN_CART.length === 0){
         content =  <p className="empty-cart">Your Cart is Empty!</p>; 
         checkout_button  ='';
