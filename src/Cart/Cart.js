@@ -1,17 +1,22 @@
-import { useContext} from "react";
+import { useContext, useState } from "react";
 import AuthContext from "../ContextApi/AuthContext"
 import CartObjects from "./CartObjects";
 import "./Cart.css";
 import {order} from '../dbFunctions'
 const Cart = () =>{
     const cxt = useContext(AuthContext);
+    const [time, setTime] = useState('');
     let cart_total,total,clear_cart,content;
     const FOOD_IN_CART = cxt.cartMenu.filter((events)=>{
             return events.count !== 0;
     })
-    let checkout_button = <button className="checkout" onClick={() => order(FOOD_IN_CART)}>Checkout</button>;
+    let checkout_button = <button className="checkout" onClick={() => order(FOOD_IN_CART).then(time => setTime(time))}>Checkout</button>;
     if(FOOD_IN_CART.length === 0){
         content =  <p className="empty-cart">Your Cart is Empty!</p>; 
+        checkout_button  ='';
+    }
+    else if (time != '') {
+        content =  <p className="check-out" >Your order will be ready in {time}</p>; 
         checkout_button  ='';
     }
     else {
@@ -25,12 +30,12 @@ const Cart = () =>{
                 <div className="cart-object">
                     <p className="cart-heading">Your Cart</p>
                     {content}
-                    {FOOD_IN_CART.map((events)=>{
+                    {time == '' ? FOOD_IN_CART.map((events)=>{
                         return <CartObjects key = {events.key} count = {events.count} id={events.id}
                                             food_name = {events.food_name} price = {events.price} 
                                             image = {events.image} amount = {events.amount}>
                                 </CartObjects>
-                    })}
+                    }) : null}
                      <div className="total">
                         {cart_total}
                         {total}

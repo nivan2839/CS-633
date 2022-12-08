@@ -48,6 +48,12 @@
     font-family: 'Permanent Marker', cursive;
 }
 
+.check-out {
+    font-size: 20px;
+    text-align: center;
+    font-family: 'Permanent Marker', cursive;
+}
+
 .close-buttons .close-cart{
     margin-left: 150px;
     margin-top: 30px;
