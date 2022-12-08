@@ -156,7 +156,7 @@ app.post("/order", (req, res) => {
         TableName: 'orders',
         Item: {
             'order_id': uuid.v4(),
-            'items': req.body.items
+            'ordered_items': req.body.items
         }
     };
     docClient.put(params, function(err) {
@@ -169,6 +169,21 @@ app.post("/order", (req, res) => {
     });
 })
 
+
+app.get('/orderedItems', (req, res) => {
+    const item_params = {
+        TableName: 'orders',
+        ProjectionExpression: 'order_id, ordered_items'
+    }
+    docClient.scan(item_params, function(err, data) {
+        if (err) {
+            console.error("Unable to query. Error:", JSON.stringify(err, null, 2));
+        }
+        else {
+            res.json({orders: data.Items});
+        }
+    })
+})
 
 
 app.listen(PORT, () => {
