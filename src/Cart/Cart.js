@@ -10,7 +10,17 @@ const Cart = () =>{
     const FOOD_IN_CART = cxt.cartMenu.filter((events)=>{
             return events.count !== 0;
     })
-    let checkout_button = <button className="checkout" onClick={() => order(FOOD_IN_CART).then(time => setTime(time))}>Checkout</button>;
+    async function placeOrder() {
+        let items = []
+        for (let key in FOOD_IN_CART) {
+            items.push({
+                food_name: FOOD_IN_CART[key].food_name,
+                count: FOOD_IN_CART[key].count
+            })
+        }
+        return await(order(items));
+    }
+    let checkout_button = <button className="checkout" onClick={() => placeOrder().then(time => setTime(time))}>Checkout</button>;
     if(FOOD_IN_CART.length === 0){
         content =  <p className="empty-cart">Your Cart is Empty!</p>; 
         checkout_button  ='';
@@ -36,6 +46,7 @@ const Cart = () =>{
                                             image = {events.image} amount = {events.amount}>
                                 </CartObjects>
                     }) : null}
+                    {console.log(FOOD_IN_CART)}
                      <div className="total">
                         {cart_total}
                         {total}
