@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+.navbar {
+    background-color: black;
+    color: white;
+    margin-top: -20px;
+    height: 40px;
+}
+ul{
+    display: flex;
+    flex-direction: row;
+}
+.carts-contents {
+    list-style: none;
+    margin-left: 950px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    font-size: 20px;
+    font-family: 'Lobster', cursive;
+}
+.franchise {
+    list-style: none;
+    margin-left: 90px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-family: 'Lobster', cursive;
+}
+.franchise-added {
+    list-style: none;
+    margin-left: 83px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-family: 'Lobster', cursive;
+}
+.twitter {
+    list-style: none;
+    margin-left: 90px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-family: 'Lobster', cursive;
+}
