@@ -14,15 +14,14 @@ function App() {
   return (
     <div className="App">
       <div className="App-header">
-        {console.log(orders)}
-        <div style={{width: '50%'}}>
-              <h3 style={{width: '50%', float: 'left'}}>Order ID</h3>
-              <h3 style={{width: '50%', float: 'left'}}>Ordered Items</h3>
+        <div className='order-box'>
+              <h3 style={{width: '40%', float: 'left'}}>Order ID</h3>
+              <h3 style={{width: '40%', float: 'left'}}>Ordered Items</h3>
         </div>
         {orders.map(x => 
-          <div style={{width: '50%'}}>
-              <p style={{width: '50%', float: 'left'}}>{x.order_id}</p>
-              <p style={{width: '50%', float: 'left'}}> {x.ordered_items.map(y => `[${y.count} ${y.food_name}] `)}</p>
+          <div className='order-box'>
+              <p style={{width: '40%', float: 'left'}}>{x.order_id}</p>
+              <p style={{width: '40%', float: 'left'}}> {x.ordered_items.map(y => `[${y.count} ${y.food_name}] `)}</p>
           </div>)}
         </div>
     </div>

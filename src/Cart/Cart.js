@@ -18,15 +18,16 @@ const Cart = () =>{
                 count: FOOD_IN_CART[key].count
             })
         }
+        cxt.clearCartHandler();
         return await(order(items));
     }
     let checkout_button = <button className="checkout" onClick={() => placeOrder().then(time => setTime(time))}>Checkout</button>;
-    if(FOOD_IN_CART.length === 0){
-        content =  <p className="empty-cart">Your Cart is Empty!</p>; 
+    if (time != '') {
+        content =  <p className="check-out" >Your order will be ready in {time}</p>; 
         checkout_button  ='';
     }
-    else if (time != '') {
-        content =  <p className="check-out" >Your order will be ready in {time}</p>; 
+    else if(FOOD_IN_CART.length === 0){
+        content =  <p className="empty-cart">Your Cart is Empty!</p>; 
         checkout_button  ='';
     }
     else {
