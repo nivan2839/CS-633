@@ -20,8 +20,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.Order-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
 }
 
 .App-link {

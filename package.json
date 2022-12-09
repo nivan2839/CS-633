@@ -20,7 +20,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "dev": "concurrently \"cd server && npm run start\" \"cd admin && set port=8080 && npm run start -- --port 8000\" \"npm run start\"",
+    "dev": "concurrently \"cd server && npm run start\" \"cd admin && set port=8080 && npm run start\" \"npm run start\"",
     "build": "react-scripts build",
     "test": "react-scripts test ",
     "eject": "react-scripts eject",
