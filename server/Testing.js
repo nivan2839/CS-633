@@ -1,6 +1,6 @@
 var request = require('supertest');
 const { expect } = require('chai');
-const createApp = require('.')
+const createApp = require('./createServer')
 
 describe('Our application', function () {
     var app;
